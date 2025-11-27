@@ -1,0 +1,105 @@
+INFO:core.database:Connected to MongoDB database: cody_datamodel
+INFO:__main__:Database connected successfully
+INFO:core.tool_loader:Loaded 2 total active tools
+INFO:core.dynamic_registry:Loading all active tools
+/Users/joelalvarado/Desktop/mcp-server/core/tool_compiler.py:44: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.compiled_at = datetime.utcnow()
+INFO:core.tool_compiler:Compiled tool: text_analyzer
+INFO:core.dynamic_registry:Registered tool: text_analyzer
+INFO:core.tool_compiler:Compiled tool: health_check
+INFO:core.dynamic_registry:Registered tool: health_check
+INFO:core.dynamic_registry:Successfully registered 2 tools
+INFO:__main__:Dynamic tools loaded and registered
+
+
+                             ╭──────────────────────────────────────────────────────────────────────────────╮                             
+                             │                                                                              │                             
+                             │                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │                             
+                             │                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │                             
+                             │                                                                              │                             
+                             │                                FastMCP 2.13.1                                │                             
+                             │                                                                              │                             
+                             │                                                                              │                             
+                             │                   🖥  Server name: Multi-tenant MCP Server                    │                             
+                             │                                                                              │                             
+                             │                   📦 Transport:   HTTP                                       │                             
+                             │                   🔗 Server URL:  http://0.0.0.0:8002/mcp                    │                             
+                             │                                                                              │                             
+                             │                   📚 Docs:        https://gofastmcp.com                      │                             
+                             │                   🚀 Hosting:     https://fastmcp.cloud                      │                             
+                             │                                                                              │                             
+                             ╰──────────────────────────────────────────────────────────────────────────────╯                             
+
+
+[11/26/25 18:22:20] INFO     Starting MCP server 'Multi-tenant MCP Server' with transport 'http' on http://0.0.0.0:8002/mcp server.py:2055
+INFO:     Started server process [36188]
+INFO:     Waiting for application startup.
+INFO:mcp.server.streamable_http_manager:StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: 4da397b5b9464e37aa119f421c77d4d9
+Tool created! Here's the database document to upload:
+==================================================
+{
+  "tool_id": "text_analyzer",
+  "name": "text_analyzer",
+  "description": "Analyzes text content and provides insights including word count, sentiment analysis, and key metrics",
+  "code": "async def execute(text, analysis_type=\"full\", context=None):\n    import json\n    import re\n    from datetime import datetime\n    \n    if not text or not isinstance(text, str):\n        return json.dumps({\"error\": \"Text parameter is required and must be a string\"})\n    \n    text = text.strip()\n    if len(text) == 0:\n        return json.dumps({\"error\": \"Text cannot be empty\"})\n    \n    # Basic analysis\n    word_count = len(text.split())\n    char_count = len(text)\n    sentence_count = len([s for s in re.split(r'[.!?]+', text) if s.strip()])\n    \n    result = {\n        \"text_length\": char_count,\n        \"word_count\": word_count,\n        \"sentence_count\": sentence_count,\n        \"avg_words_per_sentence\": round(word_count / max(sentence_count, 1), 2),\n        \"analysis_type\": analysis_type,\n        \"timestamp\": datetime.now().isoformat()\n    }\n    \n    if analysis_type in [\"sentiment\", \"full\"]:\n        # Simple sentiment analysis\n        positive_words = [\n            \"good\", \"great\", \"excellent\", \"amazing\", \"wonderful\", \"fantastic\", \n            \"love\", \"like\", \"enjoy\", \"happy\", \"pleased\", \"satisfied\", \"awesome\"\n        ]\n        negative_words = [\n            \"bad\", \"terrible\", \"awful\", \"hate\", \"dislike\", \"angry\", \"sad\", \n            \"disappointed\", \"frustrated\", \"annoyed\", \"horrible\", \"worst\"\n        ]\n        \n        text_lower = text.lower()\n        positive_count = sum(1 for word in positive_words if word in text_lower)\n        negative_count = sum(1 for word in negative_words if word in text_lower)\n        \n        if positive_count > negative_count:\n            sentiment = \"positive\"\n        elif negative_count > negative_count:\n            sentiment = \"negative\"\n        else:\n            sentiment = \"neutral\"\n        \n        result[\"sentiment\"] = {\n            \"overall\": sentiment,\n            \"positive_indicators\": positive_count,\n            \"negative_indicators\": negative_count,\n            \"confidence\": abs(positive_count - negative_count) / max(word_count, 1)\n        }\n    \n    if analysis_type == \"full\":\n        # Additional analysis for full mode\n        words = text.lower().split()\n        \n        # Most common words (excluding very short ones)\n        word_freq = {}\n        for word in words:\n            clean_word = re.sub(r'[^\\w]', '', word)\n            if len(clean_word) > 2:\n                word_freq[clean_word] = word_freq.get(clean_word, 0) + 1\n        \n        # Top 5 most frequent words\n        top_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:5]\n        \n        # Reading time estimate (average 200 words per minute)\n        reading_time_minutes = max(1, round(word_count / 200))\n        \n        result[\"detailed_analysis\"] = {\n            \"top_words\": [{\"word\": word, \"frequency\": count} for word, count in top_words],\n            \"estimated_reading_time_minutes\": reading_time_minutes,\n            \"complexity_score\": round(char_count / max(word_count, 1), 2)\n        }\n    \n    return json.dumps(result, indent=2)",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "string",
+        "description": "The text content to analyze"
+      },
+      "analysis_type": {
+        "type": "string",
+        "enum": [
+          "basic",
+          "sentiment",
+          "full"
+        ],
+        "default": "full",
+        "description": "Type of analysis to perform: basic (word/char count), sentiment (includes sentiment analysis), or full (comprehensive analysis)"
+      }
+    },
+    "required": [
+      "text"
+    ]
+  },
+  "tenants": [
+    "1"
+  ],
+  "active": true
+}
+INFO:     127.0.0.1:49658 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49660 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+WARNING:mcp.server.lowlevel.server:Tool 'user_profiler' not listed, no validation will be performed
+INFO:     127.0.0.1:49664 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:     127.0.0.1:49666 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+ERROR:core.tool_compiler:Tool text_analyzer execution failed: name 'isinstance' is not defined
+[11/26/25 18:22:50] Error calling tool 'text_analyzer'                                                                                    
+                    ╭──────────────────────────────────────── Traceback (most recent call last) ─────────────────────────────────────────╮
+                    │ /Users/joelalvarado/Desktop/mcp-server/venv/lib/python3.13/site-packages/fastmcp/tools/tool_manager.py:160 in      │
+                    │ call_tool                                                                                                          │
+                    │                                                                                                                    │
+                    │ /Users/joelalvarado/Desktop/mcp-server/venv/lib/python3.13/site-packages/fastmcp/tools/tool.py:333 in run          │
+                    │                                                                                                                    │
+                    │                                              ... 2 frames hidden ...                                               │
+                    │                                                                                                                    │
+                    │ /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/tasks.py: │
+                    │ 507 in wait_for                                                                                                    │
+                    │                                                                                                                    │
+                    │    504 │   │   │   raise TimeoutError from exc                                                                     │
+                    │    505 │                                                                                                           │
+                    │    506 │   async with timeouts.timeout(timeout):                                                                   │
+                    │ ❱  507 │   │   return await fut                                                                                    │
+                    │    508                                                                                                             │
+                    │    509 async def _wait(fs, timeout, return_when, loop):                                                            │
+                    │    510 │   """Internal helper for wait().                                                                          │
+                    │ in execute:23                                                                                                      │
+                    ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                    NameError: name 'isinstance' is not defined                                                                           

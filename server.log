@@ -1,0 +1,75 @@
+INFO:core.database:Connected to MongoDB database: cody_datamodel
+INFO:__main__:Database connected successfully
+INFO:core.tool_loader:Loaded 2 total active tools
+INFO:core.dynamic_registry:Loading all active tools
+/Users/joelalvarado/Desktop/mcp-server/core/tool_compiler.py:44: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.compiled_at = datetime.utcnow()
+INFO:core.tool_compiler:Compiled tool: user_profiler
+INFO:core.dynamic_registry:Registered tool: user_profiler
+INFO:core.tool_compiler:Compiled tool: health_check
+INFO:core.dynamic_registry:Registered tool: health_check
+INFO:core.dynamic_registry:Successfully registered 2 tools
+INFO:__main__:Dynamic tools loaded and registered
+
+
+                             ╭──────────────────────────────────────────────────────────────────────────────╮                             
+                             │                                                                              │                             
+                             │                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │                             
+                             │                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │                             
+                             │                                                                              │                             
+                             │                                FastMCP 2.13.1                                │                             
+                             │                                                                              │                             
+                             │                                                                              │                             
+                             │                   🖥  Server name: Multi-tenant MCP Server                    │                             
+                             │                                                                              │                             
+                             │                   📦 Transport:   HTTP                                       │                             
+                             │                   🔗 Server URL:  http://0.0.0.0:8002/mcp                    │                             
+                             │                                                                              │                             
+                             │                   📚 Docs:        https://gofastmcp.com                      │                             
+                             │                   🚀 Hosting:     https://fastmcp.cloud                      │                             
+                             │                                                                              │                             
+                             ╰──────────────────────────────────────────────────────────────────────────────╯                             
+
+
+[11/26/25 17:19:42] INFO     Starting MCP server 'Multi-tenant MCP Server' with transport 'http' on http://0.0.0.0:8002/mcp server.py:2055
+INFO:     Started server process [17610]
+INFO:     Waiting for application startup.
+INFO:mcp.server.streamable_http_manager:StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: 518a1353cee14f9f81b165d79ad50838
+INFO:     127.0.0.1:64785 - "POST /mcp HTTP/1.1" 406 Not Acceptable
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: cc0acc5ba53a4015b227a5ada00855b7
+INFO:     127.0.0.1:64787 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64789 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64791 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64905 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: 32d514d1732143af88314d79398d3f42
+INFO:     127.0.0.1:65059 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65060 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: 6716747337cf42469e86f1f3ab27a384
+INFO:     127.0.0.1:65063 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65064 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:     127.0.0.1:65064 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:     127.0.0.1:65081 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:65081 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:65081 - "POST /mcp HTTP/1.1" 400 Bad Request
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: c76e988f3b16424d8fe0b2df20f81da5
+INFO:     127.0.0.1:65166 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65167 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:     127.0.0.1:65167 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.streamable_http_manager:Created new transport with session ID: 10045ec86e9f42ab8af9ae3923349f93
+INFO:     127.0.0.1:65177 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65178 - "POST /mcp HTTP/1.1" 200 OK
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:     Shutting down
+ERROR:    Cancel 0 running task(s), timeout graceful shutdown exceeded
+INFO:     Waiting for application shutdown.
+INFO:mcp.server.streamable_http_manager:StreamableHTTP session manager shutting down
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17610]

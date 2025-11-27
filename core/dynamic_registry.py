@@ -46,28 +46,45 @@ class DynamicToolRegistry:
             # Compile the tool
             compiled_tool = await self.compiler.compile_tool(tool_doc)
             
-            # Create wrapper function for FastMCP based on input schema
+            # Get schema properties to build function signature
             input_schema = compiled_tool.input_schema
-            required_params = input_schema.get('properties', {})
+            properties = input_schema.get('properties', {})
+            required = input_schema.get('required', [])
             
-            # Build function signature dynamically
+            # Create wrapper function with proper parameters from schema
             import inspect
-            params = []
-            for param_name, param_def in required_params.items():
-                params.append(inspect.Parameter(param_name, inspect.Parameter.POSITIONAL_OR_KEYWORD))
             
+            # Build parameters list
+            params = []
+            for param_name, param_def in properties.items():
+                # Check if parameter is required
+                if param_name in required:
+                    params.append(inspect.Parameter(
+                        param_name, 
+                        inspect.Parameter.POSITIONAL_OR_KEYWORD
+                    ))
+                else:
+                    # Optional parameter with default
+                    default_value = param_def.get('default', None)
+                    params.append(inspect.Parameter(
+                        param_name, 
+                        inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                        default=default_value
+                    ))
+            
+            # Create wrapper function
             async def tool_wrapper(*args, **kwargs):
-                # Convert args and kwargs to dict
-                tool_params = dict(kwargs)
+                # Convert all arguments to a dictionary for the compiled tool
+                all_params = dict(kwargs)
                 
                 # Execute the compiled tool
                 result = await self.compiler.execute_tool(
-                    tool_id, tool_params, None  # No tenant for now
+                    tool_id, all_params, None  # No tenant for now
                 )
                 
                 return result
             
-            # Update function signature to match expected parameters
+            # Set the function signature so FastMCP can introspect it
             tool_wrapper.__signature__ = inspect.Signature(params)
             
             # Register with FastMCP using dynamic decorator
@@ -82,7 +99,7 @@ class DynamicToolRegistry:
     
     def _register_with_fastmcp(self, compiled_tool, wrapper_func):
         """Register tool with FastMCP server"""
-        # Use the tool decorator approach
+        # Use the tool decorator approach - FastMCP will derive schema from function signature
         decorated_tool = self.mcp.tool(
             name=compiled_tool.name,
             description=f"Dynamic tool: {compiled_tool.name}"
